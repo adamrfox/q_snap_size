@@ -110,17 +110,30 @@ def snap_match(path, plist):
 def convert_to_bytes(size, unit):
     if unit[0] in ['k', 'K']:
         return(size*1000)
-    elif unit[0] in ['m', 'M']:
+    if unit[0] in ['m', 'M']:
         return (size*1000*1000)
-    elif unit[0] in ['g', 'G']:
+    if unit[0] in ['g', 'G']:
         return(size*1000*1000*1000)
-    elif unit[0] in ['t', 'T']:
+    if unit[0] in ['t', 'T']:
         return(size*1000*1000*1000*1000)
-    elif unit[0] in ['p', 'P']:
+    if unit[0] in ['p', 'P']:
         return(size*1000*1000*1000*1000)
-    else:
-        sys.stderr.write("Unsupported unit: " + unit + ".  Supported: kb, mb, tb, pb\n")
-        exit(1)
+    sys.stderr.write("Unsupported unit: " + unit + ".  Supported: kb, mb, gb,tb, pb\n")
+    exit(1)
+
+def convert_from_bytes(bytes, unit):
+    if unit == 'k':
+        return(int(bytes/1000))
+    if unit == 'm':
+        return(int(bytes/1000/1000))
+    if unit == 'g':
+        return(int(bytes/1000/1000/1000))
+    if unit == 't':
+        return(int(bytes/1000/1000/1000/1000))
+    if unit == 'p':
+        return(int(bytes/1000/1000/1000/1000/1000))
+    sys.stderr.write("Unsupported unit: " + unit + ".  Supported: kb, mb, gb, tb, pb\n")
+    exit(2)
 
 if __name__ == "__main__":
     DEBUG = False
@@ -140,6 +153,7 @@ if __name__ == "__main__":
     snap_size = {}
     size = 0
     unit = ''
+    rep_unit = ''
     ofp = ""
 
     optlist, args = getopt.getopt(sys.argv[1:], 'hDt:f:c:o:rs:vu:', ['help', 'DEBUG', 'token=', 'creds=', 'token-file=',
@@ -176,7 +190,7 @@ if __name__ == "__main__":
         if opt in ('-v', '--verbose'):
             VERBOSE = True
         if opt in ('-u', '--unit'):
-            unit = a[0].lower()
+            rep_unit = a[0].lower()
 
     qumulo = args.pop(0)
     paths = args
@@ -201,8 +215,12 @@ if __name__ == "__main__":
                 continue
         if size > 0 and snap_size[s['id']] < size:
             continue
+        if rep_unit:
+            s_size = convert_from_bytes(snap_size[s['id']], rep_unit)
+        else:
+            s_size = snap_size[s['id']]
         snaps[s['source_file_path']] = {'id': s['id'], 'timestamp': s['timestamp'],
-                                        'expiration': s['expiration'], 'size': snap_size[s['id']]}
+                                        'expiration': s['expiration'], 'size': s_size}
         if s['lock_key'] is None:
             snaps[s['source_file_path']]['locked'] = False
         else:

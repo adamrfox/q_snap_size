@@ -140,6 +140,7 @@ if __name__ == "__main__":
     snap_size = {}
     size = 0
     unit = ''
+    ofp = ""
 
     optlist, args = getopt.getopt(sys.argv[1:], 'hDt:f:c:o:rs:vu:', ['help', 'DEBUG', 'token=', 'creds=', 'token-file=',
                                                                    'config-file=', 'output-file=' 'exclude-replication',
@@ -200,12 +201,34 @@ if __name__ == "__main__":
                 continue
         if size > 0 and snap_size[s['id']] < size:
             continue
-        snaps[s['source_file_path']] = {'id': s['id'], 'timestamp': s['timestamp'], 'policy': s['policy_name'],
+        snaps[s['source_file_path']] = {'id': s['id'], 'timestamp': s['timestamp'],
                                         'expiration': s['expiration'], 'size': snap_size[s['id']]}
         if s['lock_key'] is None:
             snaps[s['source_file_path']]['locked'] = False
         else:
             snaps[s['source_file_path']]['locked'] = True
-    pp.pprint(snaps)
+        if s['policy_name'] is None:
+            snaps[s['source_file_path']]['policy'] = "N/A"
+        else:
+            snaps[s['source_file_path']]['policy'] = s['policy_name']
+
+    # pp.pprint(snaps)
+    if outfile:
+        ofp = open(outfile, "w")
+    if VERBOSE:
+        oprint(ofp, "Path:,Size:,Policy:,Created:,Expiration:,Locked:")
+    else:
+        oprint(ofp, "Path:,Size:")
+    for sp in snaps:
+        if VERBOSE:
+            oprint(ofp, sp + ',' + str(snaps[sp]['size']) + ',' + snaps[sp]['policy'] + ',' + snaps[sp]['timestamp'] + ',' + snaps[sp]['expiration'] + ',' + str(snaps[sp]['locked']))
+        else:
+            oprint(ofp, sp + ',' + str(snaps[sp]['size']))
+    if outfile:
+        ofp.close()
+
+
+
+
 
 

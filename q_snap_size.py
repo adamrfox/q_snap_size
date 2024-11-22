@@ -4,23 +4,31 @@ import sys
 import getopt
 import getpass
 import requests
-import urllib.parse
 import json
 import time
 import os
 import keyring
 from datetime import datetime
 from dateutil import tz
-import urllib.parse
 import urllib3
 urllib3.disable_warnings()
 import re
-
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 def usage():
-    print("Usage goes here!")
+    sys.stderr.write("Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] qumulo [path] ... [path]\n")
+    sys.stderr.write("-h | --help : Prints Usage\n")
+    sys.stderr.write("-D | --DEBUG : Generated info for debugging\n")
+    sys.stderr.write("-v | --verbose : Provides more details in the report\n")
+    sys.stderr.write("-r | --exclude-replication : Exclude replication-based snapshots\n")
+    sys.stderr.write("-c | --creds : Specify credentials format is user[:password]\n")
+    sys.stderr.write("-t | --token : Specify an access token\n")
+    sys.stderr.write("-f | --token-file : Specify is token file [def: .qfds_cred]\n")
+    sys.stderr.write("-s | --size : Exclude snapshots under a given size\n")
+    sys.stderr.write('-u | --unit : Specify a unit of size in the report [def: bytes]\n')
+    sys.stderr.write("qumulo : Name or IP of a Qumulo node\n")
+    sys.stderr.write("path ... path : One or more path patterns to include (regex supported), space separated\n")
     exit(0)
 
 def dprint(message):
@@ -152,6 +160,7 @@ if __name__ == "__main__":
     token = ""
     user = ""
     password = ""
+    qumulo = ""
     RING_SYSTEM = "q_snap_size"
     fp = ""
     outfile = ""
@@ -167,7 +176,7 @@ if __name__ == "__main__":
     utc_tz = tz.tzutc()
 
     optlist, args = getopt.getopt(sys.argv[1:], 'hDt:f:c:o:rs:vu:', ['help', 'DEBUG', 'token=', 'creds=', 'token-file=',
-                                                                   'config-file=', 'output-file=' 'exclude-replication',
+                                                                   'output-file=' 'exclude-replication',
                                                                     'size=', 'verbose', 'unit='])
     for opt, a in optlist:
         if opt in ['-h', '--help']:
@@ -202,7 +211,10 @@ if __name__ == "__main__":
         if opt in ('-u', '--unit'):
             rep_unit = a[0].lower()
 
-    qumulo = args.pop(0)
+    try:
+        qumulo = args.pop(0)
+    except:
+        usage()
     paths = args
     if not user and not token:
         if not token_file:

@@ -219,29 +219,29 @@ if __name__ == "__main__":
             s_size = convert_from_bytes(snap_size[s['id']], rep_unit)
         else:
             s_size = snap_size[s['id']]
-        snaps[s['source_file_path']] = {'id': s['id'], 'timestamp': s['timestamp'],
+        snaps[s['name']] = {'id': s['id'], 'path': s['source_file_path'], 'timestamp': s['timestamp'],
                                         'expiration': s['expiration'], 'size': s_size}
         if s['lock_key'] is None:
-            snaps[s['source_file_path']]['locked'] = False
+            snaps[s['name']]['locked'] = False
         else:
-            snaps[s['source_file_path']]['locked'] = True
+            snaps[s['name']]['locked'] = True
         if s['policy_name'] is None:
-            snaps[s['source_file_path']]['policy'] = "N/A"
+            snaps[s['name']]['policy'] = "N/A"
         else:
-            snaps[s['source_file_path']]['policy'] = s['policy_name']
+            snaps[s['name']]['policy'] = s['policy_name']
 
     # pp.pprint(snaps)
     if outfile:
         ofp = open(outfile, "w")
     if VERBOSE:
-        oprint(ofp, "Path:,Size:,Policy:,Created:,Expiration:,Locked:")
+        oprint(ofp, "Path:,Name:,Size:,Policy:,Created:,Expiration:,Locked:")
     else:
-        oprint(ofp, "Path:,Size:")
+        oprint(ofp, "Path:,Name:,Size:")
     for sp in snaps:
         if VERBOSE:
-            oprint(ofp, sp + ',' + str(snaps[sp]['size']) + ',' + snaps[sp]['policy'] + ',' + snaps[sp]['timestamp'] + ',' + snaps[sp]['expiration'] + ',' + str(snaps[sp]['locked']))
+            oprint(ofp, snaps[sp]['path'] + ',' + sp + ',' + str(snaps[sp]['size']) + ',' + snaps[sp]['policy'] + ',' + snaps[sp]['timestamp'] + ',' + snaps[sp]['expiration'] + ',' + str(snaps[sp]['locked']))
         else:
-            oprint(ofp, sp + ',' + str(snaps[sp]['size']))
+            oprint(ofp, snaps[sp]['path'] + ',' + sp + ',' + str(snaps[sp]['size']))
     if outfile:
         ofp.close()
 

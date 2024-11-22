@@ -10,6 +10,7 @@ import time
 import os
 import keyring
 from datetime import datetime
+from dateutil import tz
 import urllib.parse
 import urllib3
 urllib3.disable_warnings()
@@ -135,6 +136,13 @@ def convert_from_bytes(bytes, unit):
     sys.stderr.write("Unsupported unit: " + unit + ".  Supported: kb, mb, gb, tb, pb\n")
     exit(2)
 
+def convert_to_localtime(time_s):
+    c_time = time_s.split('.')
+    cts = datetime.strptime(c_time[0], "%Y-%m-%dT%H:%M:%S")
+    cts = cts.replace(tzinfo=utc_tz)
+    cts_local = cts.astimezone(local_tz)
+    return(datetime.strftime(cts_local, '%Y-%m-%d %H:%M:%S'))
+
 if __name__ == "__main__":
     DEBUG = False
     VERBOSE = False
@@ -155,6 +163,8 @@ if __name__ == "__main__":
     unit = ''
     rep_unit = ''
     ofp = ""
+    local_tz = tz.tzlocal()
+    utc_tz = tz.tzutc()
 
     optlist, args = getopt.getopt(sys.argv[1:], 'hDt:f:c:o:rs:vu:', ['help', 'DEBUG', 'token=', 'creds=', 'token-file=',
                                                                    'config-file=', 'output-file=' 'exclude-replication',
@@ -219,8 +229,12 @@ if __name__ == "__main__":
             s_size = convert_from_bytes(snap_size[s['id']], rep_unit)
         else:
             s_size = snap_size[s['id']]
-        snaps[s['name']] = {'id': s['id'], 'path': s['source_file_path'], 'timestamp': s['timestamp'],
-                                        'expiration': s['expiration'], 'size': s_size}
+        create_time = convert_to_localtime(s['timestamp'])
+        expiration_time = ""
+        if s['expiration']:
+            expiration_time = convert_to_localtime(s['expiration'])
+        snaps[s['name']] = {'id': s['id'], 'path': s['source_file_path'], 'timestamp': create_time,
+                                        'expiration': expiration_time,  'size': s_size}
         if s['lock_key'] is None:
             snaps[s['name']]['locked'] = False
         else:

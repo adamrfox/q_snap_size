@@ -33,7 +33,7 @@ Qumulo API calls must be authenticated and the script provides multuiple ways to
 
 ## Units
 
-By deafault, all space units are specified in bytes.  Units can be used with the -s flag and in the report itself with the -u flag.  In both cases the default unit can be over-ridden with the standard abbreviations [kb, mb, gb, tb, pb].  They are case insenstive and the final 'b' is optional. 
+By default, all space units are specified in bytes.  Units can be used with the -s flag and in the report itself with the -u flag.  In both cases the default unit can be over-ridden with the standard abbreviations [kb, mb, gb, tb, pb].  They are case insenstive and the final 'b' is optional. 
 
 ## Minimum Priveldges
 

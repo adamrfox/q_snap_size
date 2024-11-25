@@ -29,7 +29,7 @@ Qumulo API calls must be authenticated and the script provides multuiple ways to
 2. Specify an access token.  It is possible to generate an access token on the Qumulo cluster and specify it on the command line with the -t flag.
 3. Specify an access token file.  The -f flag will read a specified file that will read the access token from that file.  By default it looks for .qfsd_cred as that is the default location for many qumulo CLI commands.
 4. Keyring.  If a user and password are manually entered, the option will be given to put those credentials into the keyring of that system.  Once that is done, only the user needs to be specified either via the -c flag or manually via a user prompt.
-5. If all else fails, the script will simply pronpt the user for credentials.  It will then offer to store the in the keyring for future use.
+5. If all else fails, the script will simply prompt the user for credentials.  It will then offer to store the in the keyring for future use.
 
 ## Units
 

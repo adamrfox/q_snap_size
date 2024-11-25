@@ -17,7 +17,8 @@ Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-
 -f | --token-file : Specify is token file [def: .qfds_cred]
 -s | --size : Exclude snapshots under a given size
 -u | --unit : Specify a unit of size in the report [def: bytes]
--o | --output-file : Specify an output file for the report [def: stdout]qumulo : Name or IP of a Qumulo node
+-o | --output-file : Specify an output file for the report [def: stdout]
+qumulo : Name or IP of a Qumulo node
 path ... path : One or more path patterns to include (regex supported), space separated
 </pre>
 

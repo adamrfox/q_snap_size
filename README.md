@@ -7,7 +7,7 @@ The script simply requites Pyhon 3.x and the only module that may need to be add
 
 The script is run as follows:
 <pre>
-Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] qumulo [path] ... [path]
+Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] [-o outfile] qumulo [path] ... [path]
 -h | --help : Prints Usage
 -D | --DEBUG : Generated info for debugging
 -v | --verbose : Provides more details in the report
@@ -17,7 +17,7 @@ Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-
 -f | --token-file : Specify is token file [def: .qfds_cred]
 -s | --size : Exclude snapshots under a given size
 -u | --unit : Specify a unit of size in the report [def: bytes]
-qumulo : Name or IP of a Qumulo node
+-o | --output-file : Specify an output file for the report [def: stdout]qumulo : Name or IP of a Qumulo node
 path ... path : One or more path patterns to include (regex supported), space separated
 </pre>
 

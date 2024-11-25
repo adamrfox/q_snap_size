@@ -17,7 +17,7 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 def usage():
-    sys.stderr.write("Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] qumulo [path] ... [path]\n")
+    sys.stderr.write("Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] [-o file] qumulo [path] ... [path]\n")
     sys.stderr.write("-h | --help : Prints Usage\n")
     sys.stderr.write("-D | --DEBUG : Generated info for debugging\n")
     sys.stderr.write("-v | --verbose : Provides more details in the report\n")
@@ -27,6 +27,7 @@ def usage():
     sys.stderr.write("-f | --token-file : Specify is token file [def: .qfds_cred]\n")
     sys.stderr.write("-s | --size : Exclude snapshots under a given size\n")
     sys.stderr.write('-u | --unit : Specify a unit of size in the report [def: bytes]\n')
+    sys.stderr.write("-o | --output-file : Specify an output file for the report [def: stdout]\n")
     sys.stderr.write("qumulo : Name or IP of a Qumulo node\n")
     sys.stderr.write("path ... path : One or more path patterns to include (regex supported), space separated\n")
     exit(0)

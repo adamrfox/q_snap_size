@@ -7,7 +7,7 @@ import requests
 import json
 import time
 import os
-import keyring
+import stat
 from datetime import datetime
 from dateutil import tz
 import urllib3
@@ -15,6 +15,7 @@ urllib3.disable_warnings()
 import re
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
+CREDS_FILE = os.path.expanduser("~/.config/q_snap_size/credentials.json")
 
 def usage():
     sys.stderr.write("Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] [-o file] qumulo [path] ... [path]\n")
@@ -44,16 +45,30 @@ def oprint(fp, message):
     else:
         print(message)
     return
+
+def save_password(password):
+    os.makedirs(os.path.dirname(CREDS_FILE), exist_ok=True)
+    with open(CREDS_FILE, 'w') as f:
+        json.dump({"password": password}, f)
+    os.chmod(CREDS_FILE, stat.S_IRUSR | stat.S_IWUSR)  # chmod 600
+
+def load_password():
+    if not os.path.exists(CREDS_FILE):
+        return None
+    with open(CREDS_FILE, 'r') as f:
+        creds = json.load(f)
+    return creds.get("password")
+
 def api_login(qumulo, user, password, token):
-    in_keyring = True
+    in_creds_file = True
     headers = {'Content-Type': 'application/json'}
     if not token:
         if not user:
             user = input("User: ")
         if not password:
-            password = keyring.get_password(RING_SYSTEM, user)
+            password = load_password()
         if not password:
-            in_keyring = False
+            in_creds_file = False
             password = getpass.getpass("Password: ")
         payload = {'username': user, 'password': password}
         payload = json.dumps(payload)
@@ -64,10 +79,10 @@ def api_login(qumulo, user, password, token):
         dprint(str(auth))
         if autht.ok:
             auth_headers = {'accept': 'application/json', 'Content-type': 'application/json', 'Authorization': 'Bearer ' + auth['bearer_token']}
-            if not in_keyring:
-                use_ring = input("Put these credentials into keyring? [y/n]: ")
-                if use_ring.startswith('y') or use_ring.startswith('Y'):
-                    keyring.set_password(RING_SYSTEM, user, password)
+            if not in_creds_file:
+                save_creds = input("Save password to credentials file? [y/n]: ")
+                if save_creds.startswith('y') or save_creds.startswith('Y'):
+                    save_password(password)
         else:
             sys.stderr.write("ERROR: " + auth['description'] + '\n')
             exit(2)

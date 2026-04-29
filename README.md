@@ -3,7 +3,7 @@ A project to report on the sizes of snapshots on a Qumulo cluster.
 
 Customers like Qumulo for the analytics they provide about the data stored.  But one gap in the current UI is getting a granular view of the space consumed by an individual snapshot.  Fortunately, the API endpoints exist to get this information and that's what this project used to help customers see which snapshots are consuming space and how much.
 
-The script simply requires Pyhon 3.x. While I think most of the modules are standard, there is a .pyz version that should contain all the required modules just in case. It generates a file in csv format so that it can be imported into a spreadsheet which can then be used to generate reports in many formats.
+The script simply requires Pyhon 3.9 or later. While I think most of the modules are standard, there is a .pyz version that should contain all the required modules just in case. It generates a file in csv format so that it can be imported into a spreadsheet which can then be used to generate reports in many formats.
 
 The script is run as follows:
 <pre>

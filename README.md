@@ -3,11 +3,11 @@ A project to report on the sizes of snapshots on a Qumulo cluster.
 
 Customers like Qumulo for the analytics they provide about the data stored.  But one gap in the current UI is getting a granular view of the space consumed by an individual snapshot.  Fortunately, the API endpoints exist to get this information and that's what this project used to help customers see which snapshots are consuming space and how much.
 
-The script simply requites Pyhon 3.x and the only module that may need to be added is 'keyring'.  This can be done in the standard way via pip.  It generates a file in csv format so that it can be imported into a spreadsheet which can then be used to generate reports in many formats.
+The script simply requires Pyhon 3.x. While I think most of the modules are standard, there is a .pyz version that should contain all the required modules just in case. It generates a file in csv format so that it can be imported into a spreadsheet which can then be used to generate reports in many formats.
 
 The script is run as follows:
 <pre>
-Usage: q_snap_size.py [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] [-o outfile] qumulo [path] ... [path]
+Usage: q_snap_size.py[z] [-hDvr] [-c user[:password]] [-t token] [-f token_file] [-s size] [-u unit] [-o outfile] qumulo [path] ... [path]
 -h | --help : Prints Usage
 -D | --DEBUG : Generated info for debugging
 -v | --verbose : Provides more details in the report
@@ -29,7 +29,7 @@ Qumulo API calls must be authenticated and the script provides multuiple ways to
 1. Specify the credentials on the command line with the -c flag.  The format is user[:password].  If the password is not specified the script will check the keyring, and if still not found will prompt the user.
 2. Specify an access token.  It is possible to generate an access token on the Qumulo cluster and specify it on the command line with the -t flag.
 3. Specify an access token file.  The -f flag will read a specified file that will read the access token from that file.  By default it looks for .qfsd_cred as that is the default location for many qumulo CLI commands.
-4. Keyring.  If a user and password are manually entered, the option will be given to put those credentials into the keyring of that system.  Once that is done, only the user needs to be specified either via the -c flag or manually via a user prompt.
+4. Credentials file.  If a user and password are manually entered, the option will be given to put those credentials into a credentials file (/home/.config/q_snap_size/credentials.json)  Once that is done, only the user needs to be specified either via the -c flag or manually via a user prompt.
 5. If all else fails, the script will simply prompt the user for credentials.  It will then offer to store the in the keyring for future use.
 
 ## Units
